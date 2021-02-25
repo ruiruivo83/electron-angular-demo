@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
 const url = require("url");
 const path = require("path");
 
@@ -28,6 +28,15 @@ function createWindow () {
   })
 }
 
+function openModal(){
+  const { BrowserWindow } = require('electron');
+  let modal = new BrowserWindow({ parent: mainWindow, modal: true, show: false })
+  modal.loadURL('https://www.sitepoint.com')
+  modal.once('ready-to-show', () => {
+    modal.show()
+  })
+}
+
 app.on('ready', createWindow)
 
 app.on('window-all-closed', function () {
@@ -36,4 +45,8 @@ app.on('window-all-closed', function () {
 
 app.on('activate', function () {
   if (mainWindow === null) createWindow()
+})
+
+ipcMain.on('openModal', (event, arg) => {
+  openModal()
 })
